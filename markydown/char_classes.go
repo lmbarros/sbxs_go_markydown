@@ -12,6 +12,11 @@ func isHorizontalSpace(r rune) bool {
 	return !isNewLine(r) && unicode.IsSpace(r)
 }
 
+// isHeading checks if a given rune can be used to mark a heading.
+func isHeading(r rune) bool {
+	return r == '#'
+}
+
 // isBullet checks if a given rune can be used as bullet in a bulleted list.
 func isBullet(r rune) bool {
 	return r == '+'
