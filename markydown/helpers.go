@@ -58,6 +58,8 @@ func (p *parser) consumeRawSpacesWithinParagraph() bool {
 		p.consumeRawHorizontalSpaces()
 	}
 
+	p.frag = p.input
+
 	// Does the current paragraph go on?
 	if len(p.input) == 0 {
 		return false

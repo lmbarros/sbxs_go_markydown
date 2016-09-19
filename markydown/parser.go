@@ -1,5 +1,7 @@
 package markydown
 
+import "unicode/utf8"
+
 // Parse parses a Markdown document passed as a string and lets the passed
 // Processor do its work as the document is parsed.
 //
@@ -74,8 +76,6 @@ func (p *parser) parseParagraphContents() {
 	p.fragEnd = 0
 
 	for initialLen := len(p.input); ; initialLen = len(p.input) {
-		//initialLen := len(p.input)
-		// runeType, theRune, isEscaped := p.nextRune()
 		theType, _, isEscaped := p.nextRune()
 
 		switch theType {
@@ -84,6 +84,19 @@ func (p *parser) parseParagraphContents() {
 			p.emitFragment()
 			if p.consumeRawSpacesWithinParagraph() {
 				p.processor.onSpecialToken(SpecialTokenSpace)
+			}
+
+		case runeTypeNewLine:
+			p.emitFragment()
+			p.consumeRawHorizontalSpaces()
+			if len(p.input) == 0 {
+				// End of input: return, as this is also the end of the paragraph
+				return
+			}
+			r, _ := utf8.DecodeRuneInString(p.input)
+			if isNewLine(r) {
+				// Two consecutive new lines: we reached the end of the paragraph
+				return
 			}
 
 		case runeTypeEOI:
