@@ -157,8 +157,9 @@ func TestParseSingleWord(t *testing.T) {
 func TestParseSimpleParagraphs(t *testing.T) {
 	testData := map[string][]string{
 		// Normal text paragraph
-		"bir iki":                {"SD", "SP-P", "F-bir", "ST-SP", "F-iki", "EP-P", "ED"},
-		"     água  \t seca\n  ": {"SD", "SP-P", "F-água", "ST-SP", "F-seca", "EP-P", "ED"},
+		"bir iki":                      {"SD", "SP-P", "F-bir", "ST-SP", "F-iki", "EP-P", "ED"},
+		"     água  \t seca\n  ":       {"SD", "SP-P", "F-água", "ST-SP", "F-seca", "EP-P", "ED"},
+		"\n um  \n\r dois\n\r  três  ": {"SD", "SP-P", "F-um", "ST-SP", "F-dois", "ST-SP", "F-três", "EP-P", "ED"},
 
 		// Some valid headings
 		"#\tOompa    loompa":       {"SD", "SP-H1", "F-Oompa", "ST-SP", "F-loompa", "EP-H1", "ED"},

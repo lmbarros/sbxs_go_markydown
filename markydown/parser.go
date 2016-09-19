@@ -82,13 +82,18 @@ func (p *parser) parseParagraphContents() {
 
 		case runeTypeSpace:
 			p.emitFragment()
-			if p.consumeRawSpacesWithinParagraph() {
+			p.consumeRawSpacesWithinParagraph()
+			if p.paragraphGoesOn() {
 				p.processor.onSpecialToken(SpecialTokenSpace)
 			}
 
 		case runeTypeNewLine:
 			p.emitFragment()
 			p.consumeRawHorizontalSpaces()
+			if p.paragraphGoesOn() {
+				p.processor.onSpecialToken(SpecialTokenSpace)
+			}
+
 			if len(p.input) == 0 {
 				// End of input: return, as this is also the end of the paragraph
 				return

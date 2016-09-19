@@ -35,15 +35,13 @@ func (p *parser) consumeRawHorizontalSpaces() {
 		}
 
 		p.input = p.input[w:]
+		p.frag = p.input
 	}
 }
 
 // consumeRawSpacesWithinParagraph chomps all spaces from the input, but do not
 // slip to the next paragraph.
-//
-// Returns true if the paragraph goes on, or false if the paragraph is ending
-// here.
-func (p *parser) consumeRawSpacesWithinParagraph() bool {
+func (p *parser) consumeRawSpacesWithinParagraph() {
 	p.consumeRawHorizontalSpaces()
 	r, w := utf8.DecodeRuneInString(p.input)
 	if isNewLine(r) {
@@ -59,12 +57,15 @@ func (p *parser) consumeRawSpacesWithinParagraph() bool {
 	}
 
 	p.frag = p.input
+}
 
-	// Does the current paragraph go on?
+// paragraphGoesOn tests whether the current paragraph goes on or if we are at
+// its end.
+func (p *parser) paragraphGoesOn() bool {
 	if len(p.input) == 0 {
 		return false
 	}
 
-	r, _ = utf8.DecodeRuneInString(p.input)
+	r, _ := utf8.DecodeRuneInString(p.input)
 	return !isNewLine(r)
 }
