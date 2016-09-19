@@ -39,11 +39,12 @@ asterisks -- underscores are treated as any other character. Unlike in Markdown,
 an asterisk surrounded by spaces still is considered an emphasis mark. So, you
 need to escape characters in things like this: 3 \* 7 = 21.
 
-By the way, any character can be escaped. \G\o\t\ \i\t\?
+Escaped spaces are treated as non-breaking spaces, so you may want to write
+things like 100\ kg and «\ Où\ ?\ ». Any character can be escaped, \O\K\?
 
-You can force a line\
-break by ending the line\
-with a backslash. The Markdown\
+You can force a line break by ending\
+the line with a backslash. Think that you\
+are escaping the newline character. The Markdown\
 "trailing spaces" syntax does not work here.
 
 You can create [links](www.example.com) but you cannot add a link title.
