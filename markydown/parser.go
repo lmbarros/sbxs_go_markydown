@@ -76,7 +76,7 @@ func (p *parser) parseParagraphContents() {
 	for initialLen := len(p.input); ; initialLen = len(p.input) {
 		//initialLen := len(p.input)
 		// runeType, theRune, isEscaped := p.nextRune()
-		theType, _, _ := p.nextRune()
+		theType, _, isEscaped := p.nextRune()
 
 		switch theType {
 
@@ -91,10 +91,13 @@ func (p *parser) parseParagraphContents() {
 			return
 
 		default:
+			if isEscaped {
+				p.frag = p.frag[:p.fragEnd] + p.frag[p.fragEnd+1:]
+				p.fragEnd--
+			}
 			p.fragEnd += initialLen - len(p.input)
 		}
 	}
-
 }
 
 // emitFragment tells the processor that the current text fragment was parsed
