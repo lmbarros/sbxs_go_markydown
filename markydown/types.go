@@ -1,5 +1,21 @@
 package markydown
 
+// Processor is something that processes a Markydown document as it is parsed.
+//
+// The Markydown parser works kinda like in Template Method pattern: you call
+// the parser and it calls Processor's methods as it parses the data.
+type Processor interface {
+	onStartDocument()
+	onEndDocument()
+	onStartParagraph(parType ParType)
+	onEndParagraph(parType ParType)
+	onFragment(text string)
+	onSpecialToken(token SpecialToken)
+	onChangeTextStyle(style TextStyle)
+	onStartLink(target string)
+	onEndLink()
+}
+
 // ParType is a paragraph type.
 type ParType int
 
@@ -56,18 +72,13 @@ const (
 	SpecialTokenLineBreak
 )
 
-// Processor is something that processes a Markydown document as it is parsed.
-//
-// The Markydown parser works kinda like in Template Method pattern: you call
-// the parser and it calls Processor's methods as it parses the data.
-type Processor interface {
-	onStartDocument()
-	onEndDocument()
-	onStartParagraph(parType ParType)
-	onEndParagraph(parType ParType)
-	onFragment(text string)
-	onSpecialToken(token SpecialToken)
-	onChangeTextStyle(style TextStyle)
-	onStartLink(target string)
-	onEndLink()
-}
+// runeType represents a rune type.
+type runeType int
+
+const (
+	runeTypeText runeType = iota
+	runeTypeEOI           // End of input
+	runeTypeSpace
+	runeTypeNewLine
+	runeTypeHeading
+)
