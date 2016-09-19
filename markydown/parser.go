@@ -1,6 +1,9 @@
 package markydown
 
-import "unicode/utf8"
+import (
+	"strings"
+	"unicode/utf8"
+)
 
 // Parse parses a Markdown document passed as a string and lets the passed
 // Processor do its work as the document is parsed.
@@ -47,7 +50,14 @@ func (p *parser) parseAnyParagraph() bool {
 		return false
 	}
 
-	// TODO: Try parsing other paragraph types
+	// Try parsing each of the "special" paragraph types.
+	if p.parseHeading() {
+		return true
+	}
+
+	if p.parseBulletedParagraph() {
+		return true
+	}
 
 	// If everything fails, parse as a regular text paragraph
 	p.parseTextParagraph()
@@ -65,6 +75,59 @@ func (p *parser) parseTextParagraph() {
 	defer p.processor.onEndParagraph(ParTypeText)
 
 	p.parseParagraphContents()
+}
+
+// parseHeading parses a heading (of any supported level). Returns true if the
+// parsing suceeded or false otherwise (in which case no input is consumed).
+func (p *parser) parseHeading() bool {
+	parType := parTypeInvalid
+
+	firstSpace := strings.IndexFunc(p.input, isHorizontalSpace)
+
+	if strings.HasPrefix(p.input, "###") && firstSpace == 3 {
+		parType = ParTypeHeading3
+	} else if strings.HasPrefix(p.input, "##") && firstSpace == 2 {
+		parType = ParTypeHeading2
+	} else if strings.HasPrefix(p.input, "#") && firstSpace == 1 {
+		parType = ParTypeHeading1
+	}
+
+	if parType == parTypeInvalid {
+		return false
+	}
+
+	p.input = p.input[firstSpace:]
+	p.consumeRawHorizontalSpaces()
+
+	p.processor.onStartParagraph(parType)
+	defer p.processor.onEndParagraph(parType)
+
+	p.parseParagraphContents()
+
+	return true
+}
+
+// parseBulletedParagraph parses a paragraph that is a bulleted list item.
+// Returns true if the parsing suceeded or false otherwise (in which case no
+// input is consumed).
+func (p *parser) parseBulletedParagraph() bool {
+	firstSpace := strings.IndexFunc(p.input, isHorizontalSpace)
+
+	r, w := utf8.DecodeRuneInString(p.input)
+
+	if !isBullet(r) || firstSpace != w {
+		return false
+	}
+
+	p.input = p.input[w:]
+	p.consumeRawHorizontalSpaces()
+
+	p.processor.onStartParagraph(ParTypeBulletedList)
+	defer p.processor.onEndParagraph(ParTypeBulletedList)
+
+	p.parseParagraphContents()
+
+	return true
 }
 
 // parseParagraphContents parses the contents of a paragraph. The input must be
