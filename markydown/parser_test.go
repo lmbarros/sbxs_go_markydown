@@ -233,9 +233,8 @@ func TestParseLinks(t *testing.T) {
 		"[here": {"SD", "SP-P", "F-[here", "EP-P", "ED"},
 		"x[x":   {"SD", "SP-P", "F-x[x", "EP-P", "ED"},
 
-		// Targetless link gets an empty link
-		// TODO: Or should this be simply an F-[Kafka]
-		"[Kafka]": {"SD", "SP-P", "SL-", "F-Kafka", "EL", "EP-P", "ED"},
+		// Targetless link is recognized as regular text.
+		"[Kafka]": {"SD", "SP-P", "F-[Kafka]", "EP-P", "ED"},
 	}
 
 	for input, expected := range testData {

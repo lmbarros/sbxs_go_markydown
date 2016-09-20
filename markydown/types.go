@@ -82,4 +82,6 @@ const (
 	runeTypeStrongEmphasis
 	runeTypeSpace
 	runeTypeNewLine
+	runeTypeLinkOpen
+	runeTypeLinkClose
 )

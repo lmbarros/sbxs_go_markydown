@@ -17,17 +17,21 @@ func Parse(document string, processor Processor) {
 	parser.frag = parser.input
 	parser.fragEnd = 0
 	parser.textStyle = TextStyleRegular
+	parser.linkTarget = ""
+	parser.linkTargetLen = 0
 
 	parser.parseDocument()
 }
 
 // parser stores all the parsing state.
 type parser struct {
-	input     string    // The input that was not consumed yet.
-	processor Processor // Processor processing the parsed data.
-	frag      string    // The current text fragment being parsed, along with the rest of the input
-	fragEnd   int       // Index into frag indicating the end of fragment being parsed
-	textStyle TextStyle // The current text style
+	input         string    // The input that was not consumed yet.
+	processor     Processor // Processor processing the parsed data.
+	frag          string    // The current text fragment being parsed, along with the rest of the input
+	fragEnd       int       // Index into frag indicating the end of fragment being parsed
+	textStyle     TextStyle // The current text style
+	linkTarget    string    // The current link target; if empty, we are not parsing a link
+	linkTargetLen int       // The length of the target link in the input string (may be greater than len(linkTarget), because of escapes)
 }
 
 // parseDocument parses the whole Markydown document.
@@ -190,6 +194,15 @@ func (p *parser) parseParagraphContents() {
 				// Two consecutive new lines: we reached the end of the paragraph
 				return
 			}
+
+		case runeTypeLinkOpen:
+			p.emitFragment()
+			p.processor.onStartLink(p.linkTarget)
+
+		case runeTypeLinkClose:
+			p.emitFragment()
+			p.processor.onEndLink()
+			p.consumeLinkTarget()
 
 		case runeTypeEOI:
 			p.emitFragment()
