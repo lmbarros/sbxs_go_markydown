@@ -275,6 +275,51 @@ func TestParseMultipleParagraphs(t *testing.T) {
 	}
 }
 
+// Tests parsing different kinds of newlines.
+func TestParseNewLines(t *testing.T) {
+	expectedResult := []string{"SD", "SP-P", "F-One", "ST-SP", "F-single", "ST-SP", "F-paragraph.", "EP-P", "ED"}
+
+	inputs := []string{
+		"One\nsingle\nparagraph.",
+		"One\rsingle\rparagraph.",
+		"One\n\rsingle\n\rparagraph.",
+		"One\r\nsingle\r\nparagraph.",
+		"One\r\nsingle\n\rparagraph.",
+		"One\r\nsingle\rparagraph.",
+		"One\nsingle\n\rparagraph.",
+	}
+
+	for _, v := range inputs {
+		p := &testProcessor{}
+		Parse(v, p)
+		assert.Equal(t, p.res, expectedResult)
+	}
+}
+
+// Tests inputs with hard spaces and hard line breaks.
+func TestParseHardSpacing(t *testing.T) {
+	testData := map[string][]string{
+		"«\\ Où\\ ?\\ »": {"SD", "SP-P", "F-« Où ? »", "EP-P", "ED"},
+		"blah\\ ":        {"SD", "SP-P", "F-blah ", "EP-P", "ED"},
+		" blah\\  ":      {"SD", "SP-P", "F-blah ", "EP-P", "ED"},
+
+		"line\\\nbreak":   {"SD", "SP-P", "F-line", "ST-NL", "F-break", "EP-P", "ED"},
+		"line\\\rbreak":   {"SD", "SP-P", "F-line", "ST-NL", "F-break", "EP-P", "ED"},
+		"line\\\r\nbreak": {"SD", "SP-P", "F-line", "ST-NL", "F-break", "EP-P", "ED"},
+		"line\\\n\rbreak": {"SD", "SP-P", "F-line", "ST-NL", "F-break", "EP-P", "ED"},
+
+		"here  \\\n there":   {"SD", "SP-P", "F-here", "ST-NL", "F-there", "EP-P", "ED"},
+		"here  \\\n\\ there": {"SD", "SP-P", "F-here", "ST-NL", "F- there", "EP-P", "ED"},
+		"here \\ \\\n there": {"SD", "SP-P", "F-here", "ST-SP", "F- ", "ST-NL", "F-there", "EP-P", "ED"},
+	}
+
+	for input, expected := range testData {
+		p := &testProcessor{}
+		Parse(input, p)
+		assert.Equal(t, p.res, expected)
+	}
+}
+
 // Tests parsing something looking like a real document.
 func TestParseRealDocument(t *testing.T) {
 	input := `# The  title
