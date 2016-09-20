@@ -61,7 +61,7 @@ func textStyleToString(style TextStyle) string {
 // testProcessor itself
 //
 
-// testProcessor is a Markdown processor used for testing.
+// testProcessor is a Markydown processor used for testing.
 //
 // It just append certain strings to its res member as its callbacks are called.
 // Once parsing is complete, we can just check if the expected sequence of
@@ -366,7 +366,7 @@ func TestParseRealDocument(t *testing.T) {
 // Benchmark
 //
 
-// noopProcessor is a Markdown processor that doesn't do anything.
+// noopProcessor is a Markydown processor that doesn't do anything.
 type noopProcessor struct{}
 
 func (p *noopProcessor) OnStartDocument()                  {}
@@ -379,7 +379,7 @@ func (p *noopProcessor) OnChangeTextStyle(style TextStyle) {}
 func (p *noopProcessor) OnStartLink(target string)         {}
 func (p *noopProcessor) OnEndLink()                        {}
 
-// Benchmarks the Markdown parser.
+// Benchmarks the Markydown parser.
 func BenchmarkParser(b *testing.B) {
 	const input = `
 	# A test text
