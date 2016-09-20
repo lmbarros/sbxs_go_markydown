@@ -1,5 +1,7 @@
 # sbxs_go_markydown
 
+[![GoDoc](https://godoc.org/github.com/lmbarros/sbxs_go_markydown/markydown?status.svg)](https://godoc.org/github.com/lmbarros/sbxs_go_markydown/markydown) ![License](https://img.shields.io/github/license/lmbarros/sbxs_go_markydown.svg)
+
 This package provides a Markydown parser in Go.
 
 Markydown is a small subset of
