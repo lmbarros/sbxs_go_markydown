@@ -5,23 +5,23 @@ package markydown
 // The Markydown parser works kinda like in Template Method pattern: you call
 // the parser and it calls Processor's methods as it parses the data.
 type Processor interface {
-	onStartDocument()
-	onEndDocument()
-	onStartParagraph(parType ParType)
-	onEndParagraph(parType ParType)
-	onFragment(text string)
-	onSpecialToken(token SpecialToken)
-	onChangeTextStyle(style TextStyle)
-	onStartLink(target string)
-	onEndLink()
+	OnStartDocument()
+	OnEndDocument()
+	OnStartParagraph(parType ParType)
+	OnEndParagraph(parType ParType)
+	OnFragment(text string)
+	OnSpecialToken(token SpecialToken)
+	OnChangeTextStyle(style TextStyle)
+	OnStartLink(target string)
+	OnEndLink()
 }
 
 // ParType is a paragraph type.
 type ParType int
 
 const (
-	// An invalid paragraph type.
-	parTypeInvalid ParType = iota
+	// ParTypeInvalid is an invalid paragraph type.
+	ParTypeInvalid ParType = iota
 
 	// ParTypeText is a regular paragraph.
 	ParTypeText

@@ -12,8 +12,8 @@ import (
 // the reason why it doesn't return a Boolean indicating success or failure.
 func (p *parser) parseTextParagraph() {
 
-	p.processor.onStartParagraph(ParTypeText)
-	defer p.processor.onEndParagraph(ParTypeText)
+	p.processor.OnStartParagraph(ParTypeText)
+	defer p.processor.OnEndParagraph(ParTypeText)
 
 	p.parseParagraphContents()
 }
@@ -21,7 +21,7 @@ func (p *parser) parseTextParagraph() {
 // parseHeading parses a heading (of any supported level). Returns true if the
 // parsing suceeded or false otherwise (in which case no input is consumed).
 func (p *parser) parseHeading() bool {
-	parType := parTypeInvalid
+	parType := ParTypeInvalid
 
 	firstSpace := strings.IndexFunc(p.input, isHorizontalSpace)
 
@@ -33,15 +33,15 @@ func (p *parser) parseHeading() bool {
 		parType = ParTypeHeading1
 	}
 
-	if parType == parTypeInvalid {
+	if parType == ParTypeInvalid {
 		return false
 	}
 
 	p.input = p.input[firstSpace:]
 	p.consumeRawHorizontalSpaces()
 
-	p.processor.onStartParagraph(parType)
-	defer p.processor.onEndParagraph(parType)
+	p.processor.OnStartParagraph(parType)
+	defer p.processor.OnEndParagraph(parType)
 
 	p.parseParagraphContents()
 
@@ -63,8 +63,8 @@ func (p *parser) parseBulletedParagraph() bool {
 	p.input = p.input[w:]
 	p.consumeRawHorizontalSpaces()
 
-	p.processor.onStartParagraph(ParTypeBulletedList)
-	defer p.processor.onEndParagraph(ParTypeBulletedList)
+	p.processor.OnStartParagraph(ParTypeBulletedList)
+	defer p.processor.OnEndParagraph(ParTypeBulletedList)
 
 	p.parseParagraphContents()
 
@@ -88,7 +88,7 @@ func (p *parser) parseParagraphContents() {
 			p.emitFragment()
 			p.consumeRawSpacesWithinParagraph()
 			if p.paragraphGoesOn() && !p.isHardLineBreakAhead() {
-				p.processor.onSpecialToken(SpecialTokenSpace)
+				p.processor.OnSpecialToken(SpecialTokenSpace)
 			}
 
 		case runeTypeEmphasis:
@@ -100,7 +100,7 @@ func (p *parser) parseParagraphContents() {
 				p.textStyle = TextStyleEmphasis
 			}
 
-			p.processor.onChangeTextStyle(p.textStyle)
+			p.processor.OnChangeTextStyle(p.textStyle)
 
 		case runeTypeStrongEmphasis:
 			p.emitFragment()
@@ -111,16 +111,16 @@ func (p *parser) parseParagraphContents() {
 				p.textStyle = TextStyleStrong
 			}
 
-			p.processor.onChangeTextStyle(p.textStyle)
+			p.processor.OnChangeTextStyle(p.textStyle)
 
 		case runeTypeNewLine:
 			p.emitFragment()
 			p.consumeRawHorizontalSpaces()
 
 			if isEscaped {
-				p.processor.onSpecialToken(SpecialTokenLineBreak)
+				p.processor.OnSpecialToken(SpecialTokenLineBreak)
 			} else if p.paragraphGoesOn() {
-				p.processor.onSpecialToken(SpecialTokenSpace)
+				p.processor.OnSpecialToken(SpecialTokenSpace)
 			}
 
 			if len(p.input) == 0 {
@@ -135,11 +135,11 @@ func (p *parser) parseParagraphContents() {
 
 		case runeTypeLinkStart:
 			p.emitFragment()
-			p.processor.onStartLink(p.linkTarget)
+			p.processor.OnStartLink(p.linkTarget)
 
 		case runeTypeLinkEnd:
 			p.emitFragment()
-			p.processor.onEndLink()
+			p.processor.OnEndLink()
 			p.consumeLinkTarget()
 
 		case runeTypeEOI:

@@ -70,39 +70,39 @@ type testProcessor struct {
 	res []string
 }
 
-func (p *testProcessor) onStartDocument() {
+func (p *testProcessor) OnStartDocument() {
 	p.res = append(p.res, "SD")
 }
 
-func (p *testProcessor) onEndDocument() {
+func (p *testProcessor) OnEndDocument() {
 	p.res = append(p.res, "ED")
 }
 
-func (p *testProcessor) onStartParagraph(parType ParType) {
+func (p *testProcessor) OnStartParagraph(parType ParType) {
 	p.res = append(p.res, "SP-"+parTypeToString(parType))
 }
 
-func (p *testProcessor) onEndParagraph(parType ParType) {
+func (p *testProcessor) OnEndParagraph(parType ParType) {
 	p.res = append(p.res, "EP-"+parTypeToString(parType))
 }
 
-func (p *testProcessor) onFragment(text string) {
+func (p *testProcessor) OnFragment(text string) {
 	p.res = append(p.res, "F-"+text)
 }
 
-func (p *testProcessor) onSpecialToken(token SpecialToken) {
+func (p *testProcessor) OnSpecialToken(token SpecialToken) {
 	p.res = append(p.res, "ST-"+specialTokenToString(token))
 }
 
-func (p *testProcessor) onChangeTextStyle(style TextStyle) {
+func (p *testProcessor) OnChangeTextStyle(style TextStyle) {
 	p.res = append(p.res, "TS-"+textStyleToString(style))
 }
 
-func (p *testProcessor) onStartLink(target string) {
+func (p *testProcessor) OnStartLink(target string) {
 	p.res = append(p.res, "SL-"+target)
 }
 
-func (p *testProcessor) onEndLink() {
+func (p *testProcessor) OnEndLink() {
 	p.res = append(p.res, "EL")
 }
 
@@ -369,15 +369,15 @@ func TestParseRealDocument(t *testing.T) {
 // noopProcessor is a Markdown processor that doesn't do anything.
 type noopProcessor struct{}
 
-func (p *noopProcessor) onStartDocument()                  {}
-func (p *noopProcessor) onEndDocument()                    {}
-func (p *noopProcessor) onStartParagraph(parType ParType)  {}
-func (p *noopProcessor) onEndParagraph(parType ParType)    {}
-func (p *noopProcessor) onFragment(text string)            {}
-func (p *noopProcessor) onSpecialToken(token SpecialToken) {}
-func (p *noopProcessor) onChangeTextStyle(style TextStyle) {}
-func (p *noopProcessor) onStartLink(target string)         {}
-func (p *noopProcessor) onEndLink()                        {}
+func (p *noopProcessor) OnStartDocument()                  {}
+func (p *noopProcessor) OnEndDocument()                    {}
+func (p *noopProcessor) OnStartParagraph(parType ParType)  {}
+func (p *noopProcessor) OnEndParagraph(parType ParType)    {}
+func (p *noopProcessor) OnFragment(text string)            {}
+func (p *noopProcessor) OnSpecialToken(token SpecialToken) {}
+func (p *noopProcessor) OnChangeTextStyle(style TextStyle) {}
+func (p *noopProcessor) OnStartLink(target string)         {}
+func (p *noopProcessor) OnEndLink()                        {}
 
 // Benchmarks the Markdown parser.
 func BenchmarkParser(b *testing.B) {

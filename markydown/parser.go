@@ -31,8 +31,8 @@ type parser struct {
 
 // parseDocument parses the whole Markydown document.
 func (p *parser) parseDocument() {
-	p.processor.onStartDocument()
-	defer p.processor.onEndDocument()
+	p.processor.OnStartDocument()
+	defer p.processor.OnEndDocument()
 
 	for p.parseAnyParagraph() {
 		continue
@@ -74,7 +74,7 @@ func (p *parser) parseAnyParagraph() bool {
 // the input.
 func (p *parser) emitFragment() {
 	if p.fragEnd > 0 {
-		p.processor.onFragment(p.frag[:p.fragEnd])
+		p.processor.OnFragment(p.frag[:p.fragEnd])
 	}
 
 	p.fragEnd = 0
