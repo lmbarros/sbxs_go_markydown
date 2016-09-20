@@ -46,7 +46,7 @@ func (p *parser) parseLinkTarget(input string) bool {
 
 	target := input
 	targetEnd := 0 // index into target (excludes escape runes)
-	targetLen := 0 // lenght in bytes (includes escapes runes)
+	targetLen := 0 // length in bytes (includes escapes runes)
 
 	for {
 		r, w = utf8.DecodeRuneInString(input)

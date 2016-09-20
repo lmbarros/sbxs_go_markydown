@@ -19,7 +19,7 @@ func (p *parser) parseTextParagraph() {
 }
 
 // parseHeading parses a heading (of any supported level). Returns true if the
-// parsing suceeded or false otherwise (in which case no input is consumed).
+// parsing succeeded or false otherwise (in which case no input is consumed).
 func (p *parser) parseHeading() bool {
 	parType := ParTypeInvalid
 
@@ -49,7 +49,7 @@ func (p *parser) parseHeading() bool {
 }
 
 // parseBulletedParagraph parses a paragraph that is a bulleted list item.
-// Returns true if the parsing suceeded or false otherwise (in which case no
+// Returns true if the parsing succeeded or false otherwise (in which case no
 // input is consumed).
 func (p *parser) parseBulletedParagraph() bool {
 	firstSpace := strings.IndexFunc(p.input, isHorizontalSpace)
