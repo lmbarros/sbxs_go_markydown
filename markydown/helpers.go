@@ -69,3 +69,15 @@ func (p *parser) paragraphGoesOn() bool {
 	r, _ := utf8.DecodeRuneInString(p.input)
 	return !isNewLine(r)
 }
+
+// isHardLineBreakAhead tests if we have a hard line break just ahead.
+func (p *parser) isHardLineBreakAhead() bool {
+	input := p.input
+	r, w := utf8.DecodeRuneInString(input)
+	if isEscape(r) {
+		input = input[w:]
+		r, _ = utf8.DecodeRuneInString(input)
+		return isNewLine(r)
+	}
+	return false
+}

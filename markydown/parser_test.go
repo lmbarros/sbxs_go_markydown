@@ -277,113 +277,113 @@ func TestParseMultipleParagraphs(t *testing.T) {
 
 // Tests parsing something looking like a real document.
 func TestParseRealDocument(t *testing.T) {
-	// input := `# The  title
-	//
-	// Paragraph one.
-	// Still the *same paragraph*.
-	//
-	// ## Subtitle
-	//
-	// + First;
-	//
-	// + [Second](http://www.example.com);
-	//
-	// + **Third**, ok?
-	//
-	// ### Sub*sub*ti\*tle
-	//
-	// Here \[we\] have some **more**   text\
-	// with        some hard  \
-	// breaks.
-	//
-	// `
-	//
-	// expected := []string{
-	// 	"SD",
-	// 	"SP-H1", "F-The", "ST-SP", "F-title", "EP-H1",
-	// 	"SP-P", "F-Paragraph", "ST-SP", "F-one.", "ST-SP", "F-Still", "ST-SP", "F-the", "ST-SP", "TS-EM", "F-same", "ST-SP", "F-paragraph", "TS-RE", "F-.", "EP-P",
-	// 	"SP-H2", "F-Subtitle", "EP-H2",
-	// 	"SP-UL", "F-First;", "EP-UL",
-	// 	"SP-UL", "SL-http://www.example.com", "F-Second", "EL", "F-;", "EP-UL",
-	// 	"SP-UL", "TS-ST", "F-Third", "TS-RE", "F-,", "ST-SP", "F-ok?", "EP-UL",
-	// 	"SP-H3", "F-Sub", "TS-EM", "F-sub", "TS-RE", "F-ti*tle", "EP-H3",
-	// 	"SP-P", "F-Here", "ST-SP", "F-[we]", "ST-SP", "F-have", "ST-SP", "F-some", "ST-SP", "TS-ST", "F-more", "TS-RE", "ST-SP", "F-text", "ST-NL",
-	// 	"F-with", "ST-SP", "F-some", "ST-SP", "F-hard", "ST-NL",
-	// 	"F-breaks.", "EP-P",
-	// 	"ED"}
-	//
-	// p := &testProcessor{}
-	// Parse(input, p)
-	// assert.Equal(t, p.res, expected)
+	input := `# The  title
+
+	Paragraph one.
+	Still the *same paragraph*.
+
+	## Subtitle
+
+	+ First;
+
+	+ [Second](http://www.example.com);
+
+	+ **Third**, ok?
+
+	### Sub*sub*ti\*tle
+
+	Here \[we\] have some **more**   text\
+	with        some hard  \
+	breaks.
+
+	`
+
+	expected := []string{
+		"SD",
+		"SP-H1", "F-The", "ST-SP", "F-title", "EP-H1",
+		"SP-P", "F-Paragraph", "ST-SP", "F-one.", "ST-SP", "F-Still", "ST-SP", "F-the", "ST-SP", "TS-EM", "F-same", "ST-SP", "F-paragraph", "TS-RE", "F-.", "EP-P",
+		"SP-H2", "F-Subtitle", "EP-H2",
+		"SP-UL", "F-First;", "EP-UL",
+		"SP-UL", "SL-http://www.example.com", "F-Second", "EL", "F-;", "EP-UL",
+		"SP-UL", "TS-ST", "F-Third", "TS-RE", "F-,", "ST-SP", "F-ok?", "EP-UL",
+		"SP-H3", "F-Sub", "TS-EM", "F-sub", "TS-RE", "F-ti*tle", "EP-H3",
+		"SP-P", "F-Here", "ST-SP", "F-[we]", "ST-SP", "F-have", "ST-SP", "F-some", "ST-SP", "TS-ST", "F-more", "TS-RE", "ST-SP", "F-text", "ST-NL",
+		"F-with", "ST-SP", "F-some", "ST-SP", "F-hard", "ST-NL",
+		"F-breaks.", "EP-P",
+		"ED"}
+
+	p := &testProcessor{}
+	Parse(input, p)
+	assert.Equal(t, p.res, expected)
 }
 
-// //
-// // Benchmark
-// //
 //
-// // noopProcessor is a Markdown processor that doesn't do anything.
-// type noopProcessor struct{}
+// Benchmark
 //
-// func (p *noopProcessor) onStartDocument()                  {}
-// func (p *noopProcessor) onEndDocument()                    {}
-// func (p *noopProcessor) onStartParagraph(parType ParType)  {}
-// func (p *noopProcessor) onEndParagraph(parType ParType)    {}
-// func (p *noopProcessor) onFragment(text string)            {}
-// func (p *noopProcessor) onSpecialToken(token SpecialToken) {}
-// func (p *noopProcessor) onChangeTextStyle(style TextStyle) {}
-// func (p *noopProcessor) onStartLink(target string)         {}
-// func (p *noopProcessor) onEndLink()                        {}
-//
-// // Benchmarks the Markdown parser.
-// func BenchmarkParser(b *testing.B) {
-// 	const input = `
-// 	# A test text
-//
-// 	## Here's some text for benchmarking
-//
-//     Here's some *text* few people will read, *but* will help me to evaluate
-//     my *Markyside*-related code. So, despite the low number of readers, this
-// 	*matters*.
-//
-//     ### And *here*, more of the *same*
-//
-//     You now, I need a reasonable amount of text. Even some
-//     [fake links](with-fake-targets) are nice to have. So, I'll keep writing
-//     this nonsense until I believe this is *enough* text. **Some sentences are
-//     strongly emphasized**. *Others are mildly emphasized*. And still others are
-//     not emphasized at all.
-//
-//     Maybe I should add a [real link](http://www.stackedboxes.com), too, even
-//     though nobody will *ever* click it. Well, *maybe* someone will. You, know,
-//     someone could be looking at this with an editor with clickable hyperlinks
-// 	or something like this.  Well, who knows?
-//
-// 	Should I used some lorem ipsum instead? I found them so boring. *Hm*, this
-// 	text here is also quite boring... maybe I should add a joke? Nice idea,
-// 	here's one: A duck walks into a bar, orders a beer and says to the
-// 	bartender: "put it on my bill!"
-//
-// 	In your opinion, this was:
-//
-// 	+ Funny
-//
-// 	+ **Really** funny
-//
-// 	+ Kinda funny
-//
-// 	## Some poetry
-//
-// 	Roses are red\
-// 	Violets are blue\
-// 	As Yoda would say\
-// 	This long is getting too
-//
-//     Nuff said!
-// 	`
-//
-// 	p := &noopProcessor{}
-//
-// 	for i := 0; i < b.N; i++ {
-// 		Parse(input, p)
-// 	}
-// }
+
+// noopProcessor is a Markdown processor that doesn't do anything.
+type noopProcessor struct{}
+
+func (p *noopProcessor) onStartDocument()                  {}
+func (p *noopProcessor) onEndDocument()                    {}
+func (p *noopProcessor) onStartParagraph(parType ParType)  {}
+func (p *noopProcessor) onEndParagraph(parType ParType)    {}
+func (p *noopProcessor) onFragment(text string)            {}
+func (p *noopProcessor) onSpecialToken(token SpecialToken) {}
+func (p *noopProcessor) onChangeTextStyle(style TextStyle) {}
+func (p *noopProcessor) onStartLink(target string)         {}
+func (p *noopProcessor) onEndLink()                        {}
+
+// Benchmarks the Markdown parser.
+func BenchmarkParser(b *testing.B) {
+	const input = `
+	# A test text
+
+	## Here's some text for benchmarking
+
+    Here's some *text* few people will read, *but* will help me to evaluate
+    my *Markyside*-related code. So, despite the low number of readers, this
+	*matters*.
+
+    ### And *here*, more of the *same*
+
+    You now, I need a reasonable amount of text. Even some
+    [fake links](with-fake-targets) are nice to have. So, I'll keep writing
+    this nonsense until I believe this is *enough* text. **Some sentences are
+    strongly emphasized**. *Others are mildly emphasized*. And still others are
+    not emphasized at all.
+
+    Maybe I should add a [real link](http://www.stackedboxes.com), too, even
+    though nobody will *ever* click it. Well, *maybe* someone will. You, know,
+    someone could be looking at this with an editor with clickable hyperlinks
+	or something like this.  Well, who knows?
+
+	Should I used some lorem ipsum instead? I found them so boring. *Hm*, this
+	text here is also quite boring... maybe I should add a joke? Nice idea,
+	here's one: A duck walks into a bar, orders a beer and says to the
+	bartender: "put it on my bill!"
+
+	In your opinion, this was:
+
+	+ Funny
+
+	+ **Really** funny
+
+	+ Kinda funny
+
+	## Some poetry
+
+	Roses are red\
+	Violets are blue\
+	As Yoda would say\
+	This long is getting too
+
+    Nuff said!
+	`
+
+	p := &noopProcessor{}
+
+	for i := 0; i < b.N; i++ {
+		Parse(input, p)
+	}
+}

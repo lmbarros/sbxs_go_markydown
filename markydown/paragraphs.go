@@ -87,7 +87,7 @@ func (p *parser) parseParagraphContents() {
 		case runeTypeSpace:
 			p.emitFragment()
 			p.consumeRawSpacesWithinParagraph()
-			if p.paragraphGoesOn() {
+			if p.paragraphGoesOn() && !p.isHardLineBreakAhead() {
 				p.processor.onSpecialToken(SpecialTokenSpace)
 			}
 
@@ -116,7 +116,10 @@ func (p *parser) parseParagraphContents() {
 		case runeTypeNewLine:
 			p.emitFragment()
 			p.consumeRawHorizontalSpaces()
-			if p.paragraphGoesOn() {
+
+			if isEscaped {
+				p.processor.onSpecialToken(SpecialTokenLineBreak)
+			} else if p.paragraphGoesOn() {
 				p.processor.onSpecialToken(SpecialTokenSpace)
 			}
 
