@@ -80,7 +80,7 @@ func (p *parser) parseParagraphContents() {
 	p.fragEnd = 0
 
 	for initialLen := len(p.input); ; initialLen = len(p.input) {
-		theType, _, isEscaped := p.nextRune()
+		theType, isEscaped := p.nextRune()
 
 		switch theType {
 
