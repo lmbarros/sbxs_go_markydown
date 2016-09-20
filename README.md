@@ -8,9 +8,10 @@ enough features for my needs, but you may consider too simple. (Technically it
 is not a subset, but I thought it was similar enough to be described as one.)
 
 This is *not* a Markydown to HTML converter. The parser takes a `Processor` as
-parameter, and calls methods like `onStartParagraph` and `onChangeTextStyle` as
+parameter, and calls methods like `OnStartParagraph` and `OnChangeTextStyle` as
 it parses its input. It's up to you to provide a `Processor` implementation that
-does whatever you need.
+does whatever you need. (That said, I provide an example that implements a
+simple Markydown-to-HTML converter.)
 
 ## Markydown
 
