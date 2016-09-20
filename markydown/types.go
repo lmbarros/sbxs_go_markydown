@@ -78,7 +78,8 @@ type runeType int
 const (
 	runeTypeText runeType = iota
 	runeTypeEOI           // End of input
+	runeTypeEmphasis
+	runeTypeStrongEmphasis
 	runeTypeSpace
 	runeTypeNewLine
-	runeTypeHeading
 )

@@ -16,6 +16,7 @@ func Parse(document string, processor Processor) {
 	parser.processor = processor
 	parser.frag = parser.input
 	parser.fragEnd = 0
+	parser.textStyle = TextStyleRegular
 
 	parser.parseDocument()
 }
@@ -26,6 +27,7 @@ type parser struct {
 	processor Processor // Processor processing the parsed data.
 	frag      string    // The current text fragment being parsed, along with the rest of the input
 	fragEnd   int       // Index into frag indicating the end of fragment being parsed
+	textStyle TextStyle // The current text style
 }
 
 // parseDocument parses the whole Markydown document.
@@ -150,6 +152,28 @@ func (p *parser) parseParagraphContents() {
 				p.processor.onSpecialToken(SpecialTokenSpace)
 			}
 
+		case runeTypeEmphasis:
+			p.emitFragment()
+
+			if p.textStyle == TextStyleEmphasis {
+				p.textStyle = TextStyleRegular
+			} else {
+				p.textStyle = TextStyleEmphasis
+			}
+
+			p.processor.onChangeTextStyle(p.textStyle)
+
+		case runeTypeStrongEmphasis:
+			p.emitFragment()
+
+			if p.textStyle == TextStyleStrong {
+				p.textStyle = TextStyleRegular
+			} else {
+				p.textStyle = TextStyleStrong
+			}
+
+			p.processor.onChangeTextStyle(p.textStyle)
+
 		case runeTypeNewLine:
 			p.emitFragment()
 			p.consumeRawHorizontalSpaces()
@@ -183,11 +207,16 @@ func (p *parser) parseParagraphContents() {
 
 // emitFragment tells the processor that the current text fragment was parsed
 // and resets the fragment-related parser state, in order to make it ready to
-// parse a new fragment. This is a no-op if the current fragment is empty.
+// parse a new fragment.
+//
+// If the current fragment is empty, this will not emit anything, but will reset
+// the internal state so that we start a new fragment from the current point in
+// the input.
 func (p *parser) emitFragment() {
 	if p.fragEnd > 0 {
 		p.processor.onFragment(p.frag[:p.fragEnd])
-		p.fragEnd = 0
-		p.frag = p.input
 	}
+
+	p.fragEnd = 0
+	p.frag = p.input
 }

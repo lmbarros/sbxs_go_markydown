@@ -5,12 +5,13 @@ import "unicode/utf8"
 // nextRune consumes and returns the next rune from the input.
 //
 // We could perhaps say that this function does the lexing in this
-// implementation. It handles escaped characters and handles line breaks smartly
-// (to deal with all that CRLF x CR x whatever mess), but it doesn't know
-// anything about the Markydown syntax. For instance, if it returns a result
-// saying that the next rune is a heading marker, it doesn't mean we have a
-// heading at that point of the input -- it might be just a hash sign used in
-// the middle of a paragraph.
+// implementation. (Though not all input passes through this function, we take
+// some shortcuts here and there) It handles escaped characters and handles line
+// breaks smartly (to deal with all that CRLF x CR x whatever mess), but it
+// doesn't know anything about the Markydown syntax. For instance, if it returns
+// a result saying that the next rune is a heading marker, it doesn't mean we
+// have a heading at that point of the input -- it might be just a hash sign
+// used in the middle of a paragraph.
 //
 // Three values are returned. The first is the rune type; as explained above,
 // a `#` is always identified as a `runeTypeHeading`, even if it is not being
@@ -33,6 +34,16 @@ func (p *parser) nextRune() (runeType, rune, bool) {
 
 	case isHorizontalSpace(r):
 		return runeTypeSpace, ' ', false
+
+	case isEmphasis(r):
+		r, w = utf8.DecodeRuneInString(p.input)
+
+		if isEmphasis(r) {
+			p.input = p.input[w:]
+			return runeTypeStrongEmphasis, '*', false
+		}
+
+		return runeTypeEmphasis, '*', false
 
 	case isEscape(r):
 		r, w = utf8.DecodeRuneInString(p.input)
