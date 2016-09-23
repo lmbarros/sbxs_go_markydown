@@ -3,7 +3,7 @@ package markydown_test
 import (
 	"fmt"
 
-	"github.com/lmbarros/sbxs_go_markydown/markydown"
+	"github.com/lmbarros/sbxs_go_markydown"
 )
 
 // Example shows how to use the parser to create a simple Markydown-to-HTML
