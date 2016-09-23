@@ -5,17 +5,14 @@ package markydown
 //
 // It works in the same spirit as the Template Method design pattern.
 func Parse(document string, processor Processor) {
-	parser := &parser{}
+	p := &parser{
+		input:     document,
+		processor: processor,
+		frag:      document,
+		textStyle: TextStyleRegular,
+	}
 
-	parser.input = document
-	parser.processor = processor
-	parser.frag = parser.input
-	parser.fragEnd = 0
-	parser.textStyle = TextStyleRegular
-	parser.linkTarget = ""
-	parser.linkTargetLen = 0
-
-	parser.parseDocument()
+	p.parseDocument()
 }
 
 // parser stores all the parsing state.
@@ -31,8 +28,8 @@ type parser struct {
 
 // parseDocument parses the whole Markydown document.
 func (p *parser) parseDocument() {
-	p.processor.OnStartDocument()
-	defer p.processor.OnEndDocument()
+	p.processor.StartDocument()
+	defer p.processor.EndDocument()
 
 	for p.parseAnyParagraph() {
 		continue
@@ -74,7 +71,7 @@ func (p *parser) parseAnyParagraph() bool {
 // the input.
 func (p *parser) emitFragment() {
 	if p.fragEnd > 0 {
-		p.processor.OnFragment(p.frag[:p.fragEnd])
+		p.processor.Fragment(p.frag[:p.fragEnd])
 	}
 
 	p.fragEnd = 0

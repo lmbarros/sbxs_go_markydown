@@ -63,16 +63,16 @@ func newHTMLProcessor() *htmlProcessor {
 	return p
 }
 
-func (p *htmlProcessor) OnStartDocument() {
+func (p *htmlProcessor) StartDocument() {
 	fmt.Println("<html>\n<body>")
 }
 
-func (p *htmlProcessor) OnEndDocument() {
+func (p *htmlProcessor) EndDocument() {
 	fmt.Println("</body>\n</html>")
 
 }
 
-func (p *htmlProcessor) OnStartParagraph(parType markydown.ParType) {
+func (p *htmlProcessor) StartParagraph(parType markydown.ParType) {
 
 	if parType == markydown.ParTypeBulletedList && p.parType != markydown.ParTypeBulletedList {
 		fmt.Println("<ul>")
@@ -96,7 +96,7 @@ func (p *htmlProcessor) OnStartParagraph(parType markydown.ParType) {
 	p.parType = parType
 }
 
-func (p *htmlProcessor) OnEndParagraph(parType markydown.ParType) {
+func (p *htmlProcessor) EndParagraph(parType markydown.ParType) {
 	switch parType {
 	case markydown.ParTypeText:
 		fmt.Println("</p>")
@@ -111,11 +111,11 @@ func (p *htmlProcessor) OnEndParagraph(parType markydown.ParType) {
 	}
 }
 
-func (p *htmlProcessor) OnFragment(text string) {
+func (p *htmlProcessor) Fragment(text string) {
 	fmt.Print(text)
 }
 
-func (p *htmlProcessor) OnSpecialToken(token markydown.SpecialToken) {
+func (p *htmlProcessor) SpecialToken(token markydown.SpecialToken) {
 	switch token {
 	case markydown.SpecialTokenLineBreak:
 		fmt.Print("<br>")
@@ -124,7 +124,7 @@ func (p *htmlProcessor) OnSpecialToken(token markydown.SpecialToken) {
 	}
 }
 
-func (p *htmlProcessor) OnChangeTextStyle(style markydown.TextStyle) {
+func (p *htmlProcessor) ChangeTextStyle(style markydown.TextStyle) {
 	// Close previous style
 	if p.textStyle == markydown.TextStyleEmphasis {
 		fmt.Print("</em>")
@@ -142,9 +142,9 @@ func (p *htmlProcessor) OnChangeTextStyle(style markydown.TextStyle) {
 	p.textStyle = style
 }
 
-func (p *htmlProcessor) OnStartLink(target string) {
+func (p *htmlProcessor) StartLink(target string) {
 	fmt.Print("<a href=\"" + target + "\">")
 }
-func (p *htmlProcessor) OnEndLink() {
+func (p *htmlProcessor) EndLink() {
 	fmt.Print("</a>")
 }

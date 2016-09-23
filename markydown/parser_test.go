@@ -70,39 +70,39 @@ type testProcessor struct {
 	res []string
 }
 
-func (p *testProcessor) OnStartDocument() {
+func (p *testProcessor) StartDocument() {
 	p.res = append(p.res, "SD")
 }
 
-func (p *testProcessor) OnEndDocument() {
+func (p *testProcessor) EndDocument() {
 	p.res = append(p.res, "ED")
 }
 
-func (p *testProcessor) OnStartParagraph(parType ParType) {
+func (p *testProcessor) StartParagraph(parType ParType) {
 	p.res = append(p.res, "SP-"+parTypeToString(parType))
 }
 
-func (p *testProcessor) OnEndParagraph(parType ParType) {
+func (p *testProcessor) EndParagraph(parType ParType) {
 	p.res = append(p.res, "EP-"+parTypeToString(parType))
 }
 
-func (p *testProcessor) OnFragment(text string) {
+func (p *testProcessor) Fragment(text string) {
 	p.res = append(p.res, "F-"+text)
 }
 
-func (p *testProcessor) OnSpecialToken(token SpecialToken) {
+func (p *testProcessor) SpecialToken(token SpecialToken) {
 	p.res = append(p.res, "ST-"+specialTokenToString(token))
 }
 
-func (p *testProcessor) OnChangeTextStyle(style TextStyle) {
+func (p *testProcessor) ChangeTextStyle(style TextStyle) {
 	p.res = append(p.res, "TS-"+textStyleToString(style))
 }
 
-func (p *testProcessor) OnStartLink(target string) {
+func (p *testProcessor) StartLink(target string) {
 	p.res = append(p.res, "SL-"+target)
 }
 
-func (p *testProcessor) OnEndLink() {
+func (p *testProcessor) EndLink() {
 	p.res = append(p.res, "EL")
 }
 
@@ -369,15 +369,15 @@ func TestParseRealDocument(t *testing.T) {
 // noopProcessor is a Markydown processor that doesn't do anything.
 type noopProcessor struct{}
 
-func (p *noopProcessor) OnStartDocument()                  {}
-func (p *noopProcessor) OnEndDocument()                    {}
-func (p *noopProcessor) OnStartParagraph(parType ParType)  {}
-func (p *noopProcessor) OnEndParagraph(parType ParType)    {}
-func (p *noopProcessor) OnFragment(text string)            {}
-func (p *noopProcessor) OnSpecialToken(token SpecialToken) {}
-func (p *noopProcessor) OnChangeTextStyle(style TextStyle) {}
-func (p *noopProcessor) OnStartLink(target string)         {}
-func (p *noopProcessor) OnEndLink()                        {}
+func (p *noopProcessor) StartDocument()                  {}
+func (p *noopProcessor) EndDocument()                    {}
+func (p *noopProcessor) StartParagraph(parType ParType)  {}
+func (p *noopProcessor) EndParagraph(parType ParType)    {}
+func (p *noopProcessor) Fragment(text string)            {}
+func (p *noopProcessor) SpecialToken(token SpecialToken) {}
+func (p *noopProcessor) ChangeTextStyle(style TextStyle) {}
+func (p *noopProcessor) StartLink(target string)         {}
+func (p *noopProcessor) EndLink()                        {}
 
 // Benchmarks the Markydown parser.
 func BenchmarkParser(b *testing.B) {
