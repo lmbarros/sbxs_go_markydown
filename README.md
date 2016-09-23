@@ -1,4 +1,4 @@
-# Stackedboxes' Markydown Parser in Go
+# StackedBoxes' Markydown Parser in Go
 
 [![GoDoc](https://godoc.org/github.com/lmbarros/sbxs_go_markydown?status.svg)](https://godoc.org/github.com/lmbarros/sbxs_go_markydown) [![Go Report Card](https://goreportcard.com/badge/github.com/lmbarros/sbxs_go_markydown)](https://goreportcard.com/report/github.com/lmbarros/sbxs_go_markydown) ![License](https://img.shields.io/github/license/lmbarros/sbxs_go_markydown.svg)
 
