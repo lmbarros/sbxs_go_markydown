@@ -3,7 +3,7 @@ package markydown
 import (
 	"testing"
 
-	"github.com/lmbarros/sbxs_go_test/test/assert"
+	"github.com/lmbarros/sbxs_go_test/assert"
 )
 
 //
